@@ -1,0 +1,35 @@
+# idea files
+**/*.iml
+.idea
+
+# build files
+.gradle
+build
+report
+
+# ant files
+local.properties
+
+# custom rules
+*.swp
+.DS_Store
+
+# Ignore all freeline related files and dirs.
+freeline*
+
+# Ignore Python cache files.
+*.pyc
+__pycache__
+captures/
+
+# native编译临时文件目录
+.externalNativeBuild
+
+# dementor plugin files
+app/QYVideoClient/assets/pluginapp/domain.qiyi.dementor/domain.qiyi.dementor-zh-rHK.xml
+app/QYVideoClient/assets/pluginapp/domain.qiyi.dementor.apk
+app/QYVideoClient/assets/pluginapp/domain.qiyi.dementor/domain.qiyi.dementor.xml
+app/QYVideoClient/assets/pluginapp/domain.qiyi.dementor/domain.qiyi.dementor-zh-rTW.xml
+
+# 组件化
+config/component/component.local.groovy
