@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
@@ -33,4 +33,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     api project(':plugininterfacesmodule')
+}
+
+
+task movePluginApk2HostAssets(dependsOn: build, type: Copy) {
+    println('--------------test code------------------')
+    from("$rootDir/plugina/build/outputs/apk/release") {
+        include '*.apk'
+    }
+    into("$rootDir/app/src/main/assets")
 }
