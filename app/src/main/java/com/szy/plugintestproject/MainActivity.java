@@ -49,5 +49,12 @@ public class MainActivity extends BaseActivity {
                 MainActivity.this.startActivity(new Intent(MainActivity.this,HostSkinActivity.class));
             }
         });
+
+        findViewById(R.id.btn_merge_dex_and_resource).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.startActivity(new Intent(MainActivity.this,MergeDexAndResourceActivity.class));
+            }
+        });
     }
 }
