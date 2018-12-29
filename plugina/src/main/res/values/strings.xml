@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">PluginA</string>
 
-    <string name="plugin_name">My Plugin Name Is PluginB</string>
+    <string name="plugin_name">My Plugin Name Is PluginA</string>
 </resources>

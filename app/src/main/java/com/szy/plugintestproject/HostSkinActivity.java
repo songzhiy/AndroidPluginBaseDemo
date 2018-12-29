@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class HostSkinActivity extends BaseActivity {
 
     TextView mTvPluginName = null;
     ImageView mIvPluginIcon = null;
+    FrameLayout mFlPluginViewContainer = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class HostSkinActivity extends BaseActivity {
 
         mTvPluginName = findViewById(R.id.tv_plugin_name);
         mIvPluginIcon = findViewById(R.id.iv_plugin_icon);
+        mFlPluginViewContainer = findViewById(R.id.fl_container);
 
         findViewById(R.id.btn_load_skin_plugin_a).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,8 +66,10 @@ public class HostSkinActivity extends BaseActivity {
             IPluginSkinConfig pluginSkinConfigAImpl = (IPluginSkinConfig) IPluginSkinConfigImplClazz.newInstance();
             String pluginName = pluginSkinConfigAImpl.getPluginName(HostSkinActivity.this);
             Drawable pluginIcon = pluginSkinConfigAImpl.getPluginIcon(HostSkinActivity.this);
+            View pluginInflateView = pluginSkinConfigAImpl.getPluginLayoutView(HostSkinActivity.this);
             mTvPluginName.setText(pluginName);
             mIvPluginIcon.setBackgroundDrawable(pluginIcon);
+            mFlPluginViewContainer.addView(pluginInflateView);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
