@@ -1,17 +1,21 @@
 package com.szy.plugintestproject;
 
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
 import com.szy.plugininterfacesmodule.IPluginConfig;
+import com.szy.plugininterfacesmodule.IPluginSkinConfig;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import dalvik.system.BaseDexClassLoader;
 import dalvik.system.DexFile;
@@ -93,6 +97,49 @@ public class MergeDexAndResourceActivity extends BaseActivity{
                     }
                 } else {
                     Log.e("------","插件不存在，请稍后再试");
+                }
+
+                try {
+                    String pluginApkFilePath = getDexPath("plugina.apk");
+                    //构造AssetManager
+                    AssetManager newAssetManager = AssetManager.class.newInstance();
+                    Method addAssetPathMethod = AssetManager.class.getDeclaredMethod("addAssetPath",String.class);
+                    //将插件的资源路径加入到AssetManager
+                    addAssetPathMethod.invoke(newAssetManager,pluginApkFilePath);
+                    //将宿主的资源路径加入到AssetManager中
+                    addAssetPathMethod.invoke(newAssetManager,getPackageResourcePath());
+                    //构造Resource对象
+                    Resources newResource = new Resources(newAssetManager,getResources().getDisplayMetrics(),getResources().getConfiguration());
+                    //存储newResource对象
+                    //替换ContextImpl中的Resource对象
+                    Field contextImplResourceField = getBaseContext().getClass().getDeclaredField("mResources");
+                    contextImplResourceField.setAccessible(true);
+                    contextImplResourceField.set(getBaseContext(),newResource);
+                    //替换ContextImpl中的mPackageInfo(LoadedApk)对象的Resource对象
+                    Field packageInfoField = getBaseContext().getClass().getDeclaredField("mPackageInfo");
+                    packageInfoField.setAccessible(true);
+                    Object packageInfoObj = packageInfoField.get(getBaseContext());
+                    Field packageInfoResourceFiled = packageInfoObj.getClass().getDeclaredField("mResources");
+                    packageInfoResourceFiled.setAccessible(true);
+                    packageInfoResourceFiled.set(packageInfoObj,newResource);
+
+                    //测试代码 加载pluginA里面的皮肤的东西
+                    IPluginSkinConfig pluginAConfig = (IPluginSkinConfig) getClassLoader().loadClass("com.szy.plugina.PluginASkinImpl").newInstance();
+                    //这里如果要使用Activity的context的话，需要hook掉activity内的resources对象
+                    Log.e("------",pluginAConfig.getPluginName(getBaseContext()));
+                    // TODO: 2018/12/28 书上说 如果不把ContextImpl中的Theme设置为null，会有问题 需要测试一下
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         });
