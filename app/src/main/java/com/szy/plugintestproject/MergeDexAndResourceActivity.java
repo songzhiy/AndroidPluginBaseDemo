@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.szy.plugininterfacesmodule.IPluginConfig;
 import com.szy.plugininterfacesmodule.IPluginSkinConfig;
+import com.szy.plugintestproject.hostimpl.HostSkinImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -167,6 +168,13 @@ public class MergeDexAndResourceActivity extends BaseActivity{
         findViewById(R.id.btn_load_host_apk_class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                IPluginSkinConfig hostSkinConfig = new HostSkinImpl();
+                Log.e("------",hostSkinConfig.getPluginName(getBaseContext()));
+                mFlPluginContainer.removeAllViews();
+                ImageView pluginImageView = new ImageView(getBaseContext());
+                pluginImageView.setBackgroundDrawable(hostSkinConfig.getPluginIcon(getBaseContext()));
+                mFlPluginContainer.addView(pluginImageView);
+                mFlPluginContainer.addView(hostSkinConfig.getPluginLayoutView(getBaseContext()));
 
             }
         });

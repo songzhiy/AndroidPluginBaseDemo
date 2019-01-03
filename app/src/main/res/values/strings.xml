@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PluginTestProject</string>
+
+    <string name="plugin_name">I am Host!!!</string>
 </resources>
