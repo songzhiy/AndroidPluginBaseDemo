@@ -18,4 +18,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <FrameLayout
+        android:id="@+id/fl_container"
+        app:layout_constraintTop_toBottomOf="@+id/btn_load_apk_class"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </FrameLayout>
+
 </android.support.constraint.ConstraintLayout>

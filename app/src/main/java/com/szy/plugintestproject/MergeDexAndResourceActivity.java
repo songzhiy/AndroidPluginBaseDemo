@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.szy.plugininterfacesmodule.IPluginConfig;
 import com.szy.plugininterfacesmodule.IPluginSkinConfig;
@@ -28,11 +30,15 @@ import dalvik.system.PathClassLoader;
  */
 public class MergeDexAndResourceActivity extends BaseActivity{
 
+    private FrameLayout mFlPluginContainer = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_merge_dex_and_resource);
+
+        mFlPluginContainer = findViewById(R.id.fl_container);
 
         findViewById(R.id.btn_load_apk_class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +116,7 @@ public class MergeDexAndResourceActivity extends BaseActivity{
                     addAssetPathMethod.invoke(newAssetManager,getPackageResourcePath());
                     //构造Resource对象
                     Resources newResource = new Resources(newAssetManager,getResources().getDisplayMetrics(),getResources().getConfiguration());
+//                    mResources = newResource;
                     //存储newResource对象
                     //替换ContextImpl中的Resource对象
                     Field contextImplResourceField = getBaseContext().getClass().getDeclaredField("mResources");
@@ -123,11 +130,24 @@ public class MergeDexAndResourceActivity extends BaseActivity{
                     packageInfoResourceFiled.setAccessible(true);
                     packageInfoResourceFiled.set(packageInfoObj,newResource);
 
+                    // TODO: 2018/12/28 书上说 如果不把ContextImpl中的Theme设置为null，会有问题 需要测试一下
+                    Field contextImplThemeField = getBaseContext().getClass().getDeclaredField("mTheme");
+                    contextImplThemeField.setAccessible(true);
+                    contextImplThemeField.set(getBaseContext(),null);
+
                     //测试代码 加载pluginA里面的皮肤的东西
                     IPluginSkinConfig pluginAConfig = (IPluginSkinConfig) getClassLoader().loadClass("com.szy.plugina.PluginASkinImpl").newInstance();
                     //这里如果要使用Activity的context的话，需要hook掉activity内的resources对象
                     Log.e("------",pluginAConfig.getPluginName(getBaseContext()));
-                    // TODO: 2018/12/28 书上说 如果不把ContextImpl中的Theme设置为null，会有问题 需要测试一下
+                    ImageView pluginImageView = new ImageView(getBaseContext());
+                    pluginImageView.setBackgroundDrawable(pluginAConfig.getPluginIcon(getBaseContext()));
+                    mFlPluginContainer.addView(pluginImageView);
+                    //这里发生了资源冲突的问题 导致了加载错布局的情况 其实就是和R文件生成的id有关 当id一样的时候 就会发生资源冲突的情况 导致加载错布局
+                    //这里的解决方案是修改了aapt 这里是基于buildTools 26.0.2进行了修改 
+                    // Q: 2019/1/3 尚未解决的问题 为什么getBaseContext的时候无效
+                    // A: 因为Inflater里面使用的并非是传递进去的context，所以需要hook掉，采用替换context的方式为clone一个LayoutInflater
+                    mFlPluginContainer.addView(pluginAConfig.getPluginLayoutView(getBaseContext()));
+
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {
@@ -151,4 +171,14 @@ public class MergeDexAndResourceActivity extends BaseActivity{
             }
         });
     }
+
+//    private Resources mResources = null;
+//
+//    @Override
+//    public Resources getResources() {
+//        if (mResources != null) {
+//            return mResources;
+//        }
+//        return super.getResources();
+//    }
 }
