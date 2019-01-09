@@ -1,16 +1,23 @@
 package com.szy.plugintestproject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+
+import com.szy.plugininterfacesmodule.IPluginSkinConfig;
+
+import dalvik.system.DexClassLoader;
 
 /**
  * Created by songzhiyang on 2019/1/9.
  *
  * 实现启动插件activity，并可以点击button，弹出toast
  *
- * 1、占坑的manifest提供
+ * 1、占坑的manifest提供  已提供standard
  * 2、资源的合并操作
  * 3、hook activity跳转所需的地方
  * 4、hook 插件dex 方式有下面三种
@@ -21,7 +28,16 @@ import android.view.View;
  *
  * @author songzhiyang
  */
-public class PreManifestLoadPluginActivity extends Activity{
+public class PreManifestLoadPluginActivity extends BaseActivity{
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+
+
+        mergeResource("plugina.apk");
+
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +48,21 @@ public class PreManifestLoadPluginActivity extends Activity{
         findViewById(R.id.btn_load_activity_use_cache).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DexClassLoader dexClassLoader = loadPluginApk("plugina.apk");
+                //test code
+                try {
+                    IPluginSkinConfig iPluginSkinConfig = (IPluginSkinConfig) dexClassLoader.loadClass("com.szy.plugina.PluginASkinImpl").newInstance();
+                    Log.e("------",iPluginSkinConfig.getPluginName(getBaseContext()));
+                    View view = iPluginSkinConfig.getPluginLayoutView(getBaseContext());
+                    FrameLayout frameLayout = findViewById(R.id.fl_container);
+                    frameLayout.addView(view);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
