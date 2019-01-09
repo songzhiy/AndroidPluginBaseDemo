@@ -27,4 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:id="@+id/btn_pre_load_plugin_activity"
+        app:layout_constraintTop_toBottomOf="@+id/btn_merge_dex_and_resource"
+        android:text="占坑方式加载四大组件activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </android.support.constraint.ConstraintLayout>

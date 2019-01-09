@@ -56,5 +56,12 @@ public class MainActivity extends BaseActivity {
                 MainActivity.this.startActivity(new Intent(MainActivity.this,MergeDexAndResourceActivity.class));
             }
         });
+
+        findViewById(R.id.btn_pre_load_plugin_activity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.startActivity(new Intent(MainActivity.this,PreManifestLoadPluginActivity.class));
+            }
+        });
     }
 }

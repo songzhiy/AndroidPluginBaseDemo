@@ -24,6 +24,11 @@
         <activity android:name=".HostSkinActivity"/>
 
         <activity android:name=".MergeDexAndResourceActivity"/>
+
+        <activity android:name=".PreManifestLoadPluginActivity"/>
+
+        <activity android:name=".StubStandardActivity"/>
+
     </application>
 
 </manifest>
