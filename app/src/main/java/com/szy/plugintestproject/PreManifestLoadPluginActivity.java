@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import com.szy.plugininterfacesmodule.IPluginSkinConfig;
 import com.szy.plugintestproject.hook.ActivityStartHooker;
+import com.szy.plugintestproject.hook.activity.ActivityThreadHandlerHooker;
 
 import dalvik.system.DexClassLoader;
 
@@ -48,6 +49,7 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
         findViewById(R.id.btn_load_activity_use_cache).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ActivityThreadHandlerHooker.hookActivityThreadHooker(getBaseContext());
                 startActivity(new Intent(PreManifestLoadPluginActivity.this,HostSkinActivity.class));
             }
         });
