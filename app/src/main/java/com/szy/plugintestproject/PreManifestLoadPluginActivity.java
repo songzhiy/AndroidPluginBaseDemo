@@ -1,6 +1,7 @@
 package com.szy.plugintestproject;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,7 +51,11 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
                 ActivityThreadHandlerHooker.hookActivityThreadHooker(getBaseContext());
-                startActivity(new Intent(PreManifestLoadPluginActivity.this,HostSkinActivity.class));
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName("com.szy.plugina","com.szy.plugina.PluginAActivityA");
+//                ComponentName componentName = new ComponentName(PreManifestLoadPluginActivity.this,StubStandardActivity.class);
+                intent.setComponent(componentName);
+                startActivity(intent);
             }
         });
     }
