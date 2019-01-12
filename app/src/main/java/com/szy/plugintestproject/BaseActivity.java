@@ -8,11 +8,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import dalvik.system.BaseDexClassLoader;
 import dalvik.system.DexClassLoader;
+import dalvik.system.DexFile;
 
 /**
  * Created by songzhiyang on 2018/12/19.
@@ -78,6 +83,54 @@ public class BaseActivity extends AppCompatActivity{
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void mergeDexInHostApp(String apkName) {
+        File apkFile = new File(getFilesDir(),apkName);
+        if (!apkFile.exists()) {
+            return;
+        }
+        //将插件所需的dex合并到pathclassloader的pathList的elements中
+        Class baseClassLoaderClazz = BaseDexClassLoader.class;
+        try {
+            Field dexPathListField = baseClassLoaderClazz.getDeclaredField("pathList");
+            dexPathListField.setAccessible(true);
+            Object dexPathList = dexPathListField.get(getClassLoader());
+            Field elementsFiled = dexPathList.getClass().getDeclaredField("dexElements");
+            elementsFiled.setAccessible(true);
+            //host的elements 存放dex的Element数组
+            Object elementsObj = elementsFiled.get(dexPathList);
+            //public Element(File dir, boolean isDirectory, File zip, DexFile dexFile) {
+            Class elementClazz = elementsObj.getClass().getComponentType();
+            Class[] paramsClazz = new Class[]{File.class,boolean.class,File.class, DexFile.class};
+            Constructor elementConstructor = elementClazz.getConstructor(paramsClazz);
+            File pluginApkOutputFile = new File(getFilesDir(),"outputFile");
+            DexFile dexFile = DexFile.loadDex(apkFile.getAbsolutePath(),pluginApkOutputFile.getAbsolutePath(),0);
+            Object[] params = new Object[]{apkFile,false,apkFile,dexFile};
+            Object newElementObj = elementConstructor.newInstance(params);
+            Object[] newElements = new Object[]{newElementObj};
+
+            //copy element to new array
+            Object newArray = Array.newInstance(elementClazz,Array.getLength(elementsObj)+1);
+            System.arraycopy(elementsObj,0,newArray,0,Array.getLength(elementsObj));
+            System.arraycopy(newElements,0,newArray,Array.getLength(elementsObj),1);
+
+            Log.e("------","length ---- " + Array.getLength(newArray));
+            //set new elements
+            elementsFiled.set(dexPathList,newArray);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
     }

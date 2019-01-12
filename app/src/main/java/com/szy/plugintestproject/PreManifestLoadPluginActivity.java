@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.szy.plugininterfacesmodule.IPluginConfig;
 import com.szy.plugininterfacesmodule.IPluginSkinConfig;
 import com.szy.plugintestproject.hook.ActivityStartHooker;
 import com.szy.plugintestproject.hook.activity.ActivityThreadHandlerHooker;
@@ -39,6 +40,7 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
         super.attachBaseContext(newBase);
         mergeResource("plugina.apk");
         ActivityStartHooker.hookActivityStarter(newBase);
+        mergeDexInHostApp("plugina.apk");
     }
 
     @Override
@@ -56,6 +58,22 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
 //                ComponentName componentName = new ComponentName(PreManifestLoadPluginActivity.this,StubStandardActivity.class);
                 intent.setComponent(componentName);
                 startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.btn_load_activity_use_merge_class_loader).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    IPluginConfig iPluginConfig = (IPluginConfig) getClassLoader().loadClass("com.szy.plugina.PluginAManager").newInstance();
+                    Log.e("------",iPluginConfig.getPluginName());
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
