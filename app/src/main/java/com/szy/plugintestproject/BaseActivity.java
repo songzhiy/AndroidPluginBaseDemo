@@ -3,9 +3,12 @@ package com.szy.plugintestproject;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.widget.Toast;
+
+import com.szy.plugininterfacesmodule.BasePluginActivity;
+import com.szy.plugininterfacesmodule.ResouceHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +27,7 @@ import dalvik.system.DexFile;
  *
  * @author songzhiyang
  */
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends BasePluginActivity{
 
     protected DexClassLoader loadPluginApk(String apkName) {
         File file = new File(BaseActivity.this.getFilesDir(),apkName);
@@ -62,6 +65,8 @@ public class BaseActivity extends AppCompatActivity{
             addAssetPathMethond.invoke(assetManager,apkFile.getAbsolutePath());
             Resources newResource = new Resources(assetManager,getResources().getDisplayMetrics(),getResources().getConfiguration());
 
+            ResouceHelper.sResources = newResource;
+
             //将newResource放置到ContextImpl中
             Field contextImplResourceField = getBaseContext().getClass().getDeclaredField("mResources");
             contextImplResourceField.setAccessible(true);
@@ -74,6 +79,21 @@ public class BaseActivity extends AppCompatActivity{
             loadedApkResourceField.setAccessible(true);
             loadedApkResourceField.set(loadedApkObj,newResource);
 
+            //设置activity的resource
+            Field contextThemeWrapperField = ContextThemeWrapper.class.getDeclaredField("mResources");
+            contextThemeWrapperField.setAccessible(true);
+            contextThemeWrapperField.set(this,newResource);
+
+            //设置空theme
+            Field themeField = getBaseContext().getClass().getDeclaredField("mTheme");
+            themeField.setAccessible(true);
+            themeField.set(getBaseContext(),null);
+
+            Field contextThemeWrapperThemeField = ContextThemeWrapper.class.getDeclaredField("mTheme");
+            contextThemeWrapperThemeField.setAccessible(true);
+            contextThemeWrapperThemeField.set(this,null);
+
+            Log.e("------","host resource -- " + getBaseContext().getResources().toString());
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
