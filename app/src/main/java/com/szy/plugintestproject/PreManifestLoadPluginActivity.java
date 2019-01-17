@@ -59,7 +59,7 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                // TODO: 2019/1/14 准备开始实现hook LoadedApk的方式 替换classloader的办法
+                //准备开始实现hook LoadedApk的方式 替换classloader的办法
                 ActivityLoadedApkCacheHook.hookActivityStarterLoadedApkCache(getBaseContext(),"plugina.apk","com.szy.plugina");
 
                 ActivityLoadedApkCacheHook.hookPackageManagerGetPackageInfo(getBaseContext());
