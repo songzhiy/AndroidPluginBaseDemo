@@ -2,6 +2,8 @@ package com.szy.plugintestproject.hook.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -55,6 +57,12 @@ class HookCallback implements Handler.Callback {
                     Intent intent = (Intent) intentField.get(msg.obj);
                     Intent realIntent = (Intent) intent.getParcelableExtra(HookConstants.INTENT_EXTRA_REAL_INTENT);
                     intent.setComponent(realIntent.getComponent());
+                    // TODO: 2019/1/17 只有在命中缓存的情况下才应该走这里 替换packageName
+                    Field activityInfoField = msg.obj.getClass().getDeclaredField("activityInfo");
+                    activityInfoField.setAccessible(true);
+                    ActivityInfo activityInfoObj = (ActivityInfo) activityInfoField.get(msg.obj);
+                    ApplicationInfo applicationInfoObj = activityInfoObj.applicationInfo;
+                    applicationInfoObj.packageName = "com.szy.plugina";
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (NoSuchFieldException e) {

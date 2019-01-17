@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,6 +16,7 @@ import com.szy.plugininterfacesmodule.IPluginConfig;
 import com.szy.plugininterfacesmodule.IPluginSkinConfig;
 import com.szy.plugintestproject.dex.DexPathClassLoader;
 import com.szy.plugintestproject.hook.ActivityStartHooker;
+import com.szy.plugintestproject.hook.activity.ActivityLoadedApkCacheHook;
 import com.szy.plugintestproject.hook.activity.ActivityThreadHandlerHooker;
 
 import java.io.File;
@@ -53,10 +56,20 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
         setContentView(R.layout.activity_pre_manifest_load_plugin_activity);
 
         findViewById(R.id.btn_load_activity_use_cache).setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 // TODO: 2019/1/14 准备开始实现hook LoadedApk的方式 替换classloader的办法
-                startPluginActivity();
+                ActivityLoadedApkCacheHook.hookActivityStarterLoadedApkCache(getBaseContext(),"plugina.apk","com.szy.plugina");
+
+                ActivityLoadedApkCacheHook.hookPackageManagerGetPackageInfo(getBaseContext());
+
+                ActivityThreadHandlerHooker.hookActivityThreadHooker(getBaseContext());
+                Intent intent = new Intent();
+                ComponentName componentName = null;
+                componentName = new ComponentName("com.szy.plugina","com.szy.plugina.PluginAActivityA");
+                intent.setComponent(componentName);
+                startActivity(intent);
             }
         });
 
@@ -73,7 +86,7 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
+                // TODO: 2019/1/17 要调试 需要注释掉ActivityThreadHandlerCallback中的部分代码
                 mergeDexInHostApp("plugina.apk");
                 startPluginActivity();
             }
@@ -119,7 +132,7 @@ public class PreManifestLoadPluginActivity extends BaseActivity{
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();
                 }
-
+                // TODO: 2019/1/17 要调试 需要注释掉ActivityThreadHandlerCallback中的部分代码
                 startPluginActivity();
             }
         });
