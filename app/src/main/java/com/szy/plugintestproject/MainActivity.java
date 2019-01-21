@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btn_load_plugin_service).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainActivity.this.startActivity(new Intent(MainActivity.this,PluginServiceActivity.class));
             }
         });
     }

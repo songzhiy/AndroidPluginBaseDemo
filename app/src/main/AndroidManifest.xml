@@ -31,6 +31,8 @@
 
         <activity android:name=".PluginServiceActivity"/>
 
+        <service android:name=".StubService"/>
+
     </application>
 
 </manifest>
