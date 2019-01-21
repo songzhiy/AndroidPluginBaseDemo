@@ -63,5 +63,12 @@ public class MainActivity extends BaseActivity {
                 MainActivity.this.startActivity(new Intent(MainActivity.this,PreManifestLoadPluginActivity.class));
             }
         });
+
+        findViewById(R.id.btn_load_plugin_service).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }

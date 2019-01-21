@@ -9,29 +9,36 @@
 
     <Button
         android:id="@+id/load_plugin"
-        android:text="加载插件"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="加载插件"/>
 
     <Button
         android:id="@+id/btn_jump_2_skin_activity"
-        android:text="跳转到更换皮肤activity"
-        app:layout_constraintLeft_toRightOf="@+id/load_plugin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="跳转到更换皮肤activity"
+        app:layout_constraintLeft_toRightOf="@+id/load_plugin"/>
 
     <Button
         android:id="@+id/btn_merge_dex_and_resource"
-        android:text="合并dex和resource方案"
-        app:layout_constraintTop_toBottomOf="@+id/load_plugin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="合并dex和resource方案"
+        app:layout_constraintTop_toBottomOf="@+id/load_plugin"/>
 
     <Button
         android:id="@+id/btn_pre_load_plugin_activity"
-        app:layout_constraintTop_toBottomOf="@+id/btn_merge_dex_and_resource"
-        android:text="占坑方式加载四大组件activity"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="占坑方式加载四大组件activity"
+        app:layout_constraintTop_toBottomOf="@+id/btn_merge_dex_and_resource"/>
+
+    <Button
+        android:id="@+id/btn_load_plugin_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="启动插件中的service"
+        app:layout_constraintTop_toBottomOf="@+id/btn_pre_load_plugin_activity"/>
 
 </android.support.constraint.ConstraintLayout>

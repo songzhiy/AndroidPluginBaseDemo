@@ -29,6 +29,8 @@
 
         <activity android:name=".StubStandardActivity"/>
 
+        <activity android:name=".PluginServiceActivity"/>
+
     </application>
 
 </manifest>
