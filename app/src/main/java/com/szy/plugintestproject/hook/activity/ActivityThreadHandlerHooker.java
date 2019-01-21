@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageItemInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -68,6 +69,25 @@ class HookCallback implements Handler.Callback {
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();
                 }
+                break;
+            case 114://create service
+                //替换回原有的service intent
+                try {
+                    Object createServiceDataObj = msg.obj;
+                    Field createServiceDataServiceInfoField = createServiceDataObj.getClass().getDeclaredField("info");
+                    createServiceDataServiceInfoField.setAccessible(true);
+                    Object serviceInfoObj = createServiceDataServiceInfoField.get(createServiceDataObj);
+                    Field serviceInfoNameField = PackageItemInfo.class.getDeclaredField("name");
+                    serviceInfoNameField.setAccessible(true);
+                    //这里应该从缓存里获取对应的service 这里因为demo的原因 直接写死了
+                    serviceInfoNameField.set(serviceInfoObj,"com.szy.plugina.PluginAServiceA");
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 116://stop service
                 break;
             default:
                 break;
