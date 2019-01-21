@@ -95,6 +95,12 @@ class HookCallback implements Handler.Callback {
                 //这样mServices中的service存放的已经是替换过的插件里的service了
                 //所以在停止的时候 根据token找到的也是插件中的service 因此不需要在这里进行hook
                 break;
+            case 121://bind service
+                //具体参考stop service的原因 均是从mServices这个缓存中获取出来的，因此无需hook
+                break;
+            case 122://unbind service
+                //具体参考stop service的原因 均是从mServices这个缓存中获取出来的，因此无需hook
+                break;
             default:
                 break;
         }

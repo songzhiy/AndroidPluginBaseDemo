@@ -2,9 +2,12 @@ package com.szy.plugina;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.szy.plugininterfacesmodule.IServiceLogBinder;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,7 +31,7 @@ public class PluginAServiceA extends Service{
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new PluginAServiceBinder();
     }
 
     @Override
@@ -36,7 +39,7 @@ public class PluginAServiceA extends Service{
         Log.e("------","start service");
         if (isFirst) {
             isFirst = false;
-            mTimer.schedule(mTimerTask,0,10);
+            mTimer.schedule(mTimerTask,0,1000);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -46,5 +49,13 @@ public class PluginAServiceA extends Service{
         super.onDestroy();
         mTimer.cancel();
         Log.e("------","stop service");
+    }
+
+    public class PluginAServiceBinder extends Binder implements IServiceLogBinder {
+
+        @Override
+        public void logServiceBinder() {
+            Log.e("------","logPluginServiceBinder");
+        }
     }
 }

@@ -53,35 +53,21 @@ public class IActivityManagerProxy implements InvocationHandler{
             Log.e("------","替换完的 --- " + ((Intent)args[intentIndex]).getComponent().getClassName());
             return method.invoke(mIActivityManager,args);
         }
-        if ("startService".equals(method.getName())) {
+        if ("startService".equals(method.getName())
+                || "stopService".equals(method.getName())
+                || "bindService".equals(method.getName())
+                || "unbindService".equals(method.getName())) {
             //hook service
-            Log.e("------","start service -- hook!");
-            int intentIndex = 0;
+            Log.e("------","service -- hook!");
+            int intentIndex = -1;
             for (int i=0;i<args.length;i++) {
                 if (args[i] instanceof Intent) {
                     intentIndex = i;
                     break;
                 }
             }
-            Intent intent = (Intent) args[intentIndex];
-            if ("com.szy.plugina.PluginAServiceA".equals(intent.getComponent().getClassName())) {
-                Intent stubIntent = new Intent();
-                ComponentName componentName = new ComponentName(intent.getComponent().getPackageName(), StubService.class.getName());
-                stubIntent.setComponent(componentName);
-                stubIntent.putExtra(INTENT_EXTRA_REAL_INTENT,intent);
-                args[intentIndex] = stubIntent;
+            if (intentIndex == -1) {
                 return method.invoke(mIActivityManager,args);
-            }
-        }
-        if ("stopService".equals(method.getName())) {
-            //hook service
-            Log.e("------","stop service -- hook!");
-            int intentIndex = 0;
-            for (int i=0;i<args.length;i++) {
-                if (args[i] instanceof Intent) {
-                    intentIndex = i;
-                    break;
-                }
             }
             Intent intent = (Intent) args[intentIndex];
             if ("com.szy.plugina.PluginAServiceA".equals(intent.getComponent().getClassName())) {
