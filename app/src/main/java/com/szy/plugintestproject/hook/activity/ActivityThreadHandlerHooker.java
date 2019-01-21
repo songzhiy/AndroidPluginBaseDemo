@@ -88,6 +88,12 @@ class HookCallback implements Handler.Callback {
                 }
                 break;
             case 116://stop service
+                //这里不需要hook 因为通过查看源码可以知道
+                //在启动的时候进行了替换成stub service后 AMS会找到其对应的token
+                //然后将这个token发送给ActivityThread 然后从mServices中查找对应的service
+                //而在service创建的过程中 是当service创建完 才会将token和service的对应关系放到mService中
+                //这样mServices中的service存放的已经是替换过的插件里的service了
+                //所以在停止的时候 根据token找到的也是插件中的service 因此不需要在这里进行hook
                 break;
             default:
                 break;
