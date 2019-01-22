@@ -31,6 +31,8 @@
 
         <activity android:name=".PluginServiceActivity"/>
 
+        <activity android:name=".PluginBroadcastReceiverActivity"/>
+
         <service android:name=".StubService"/>
 
     </application>

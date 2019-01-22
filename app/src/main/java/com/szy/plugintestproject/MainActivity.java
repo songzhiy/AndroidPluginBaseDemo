@@ -70,5 +70,19 @@ public class MainActivity extends BaseActivity {
                 MainActivity.this.startActivity(new Intent(MainActivity.this,PluginServiceActivity.class));
             }
         });
+
+        findViewById(R.id.btn_load_plugin_broadcast_receiver).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,PluginBroadcastReceiverActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_load_plugin_content_provider).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"跳转内容提供者",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

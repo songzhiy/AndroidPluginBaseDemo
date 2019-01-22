@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Button
+        android:id="@+id/btn_dynamic_register_receiver"
+        android:text="加载动态的广播接受者"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_manifest_register_receiver"
+        android:text="加载插件静态的广播接收者"
+        app:layout_constraintTop_toBottomOf="@+id/btn_dynamic_register_receiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_host_manifest_register_receiver"
+        android:text="宿主注册manifest加载插件广播接收者"
+        app:layout_constraintTop_toBottomOf="@+id/btn_manifest_register_receiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</android.support.constraint.ConstraintLayout>
