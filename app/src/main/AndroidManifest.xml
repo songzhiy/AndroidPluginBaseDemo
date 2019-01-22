@@ -35,6 +35,13 @@
 
         <service android:name=".StubService"/>
 
+        <receiver android:name=".StubBroadcastReceiver">
+            <intent-filter>
+                <action android:name="host_receiver_1"/>
+                <action android:name="host_receiver_2"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

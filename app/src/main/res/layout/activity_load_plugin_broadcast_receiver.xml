@@ -39,4 +39,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:text="测试通过宿主receiver进行传递1"
+        android:id="@+id/btn_test_host_broadcast1"
+        app:layout_constraintTop_toBottomOf="@+id/btn_test_plugina_broadcast2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:text="测试通过宿主receiver进行传递2"
+        android:id="@+id/btn_test_host_broadcast2"
+        app:layout_constraintTop_toBottomOf="@+id/btn_test_host_broadcast1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </android.support.constraint.ConstraintLayout>

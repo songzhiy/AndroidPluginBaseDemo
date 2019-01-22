@@ -18,6 +18,8 @@ import com.szy.plugintestproject.hook.receiver.BroadcastDynamicRegisterHooker;
  * 2、静态注册广播的处理 扫描插件apk 获取插件manifest文件中receiver信息 进行动态注册即可
  *    但2方案有个问题 就是失去了静态广播的能力 因此可以使用方案3处理
  * 3、在host宿主中添加一个receiver，其action为所有插件的触发条件，由host receiver进行静态注册并中转分发
+ *    3主要是为了解决2丧失静态注册广播的优势 因此需要在宿主中注册所有的插件中需要的广播 作为action
+ *    然后将action进行解析转发 转发给对应的插件广播接收者
  *
  * @author songzhiyang
  */
@@ -63,7 +65,9 @@ public class PluginBroadcastReceiverActivity extends BaseActivity{
         findViewById(R.id.btn_host_manifest_register_receiver).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(PluginBroadcastReceiverActivity.this,"宿主注册manifest加载插件静态注册广播接收者方案",Toast.LENGTH_SHORT).show();
+                mergeDexInHostApp("plugina.apk");
+                //这里理论上应该放置到 application的attachBaseContext回调中，因为要启动receiver需要先启动application
+                StubBroadcastReceiver.loadPluginReceivers(getBaseContext());
             }
         });
 
@@ -79,6 +83,22 @@ public class PluginBroadcastReceiverActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Constants.BroadcastReceiverConstants.MANIFEST_REGISTER_PLUGIN_BROADCAST_RECEIVER2);
+                sendBroadcast(intent);
+            }
+        });
+
+        findViewById(R.id.btn_test_host_broadcast1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StubBroadcastReceiver.HOST_RECEIVER_1);
+                sendBroadcast(intent);
+            }
+        });
+
+        findViewById(R.id.btn_test_host_broadcast2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StubBroadcastReceiver.HOST_RECEIVER_2);
                 sendBroadcast(intent);
             }
         });
