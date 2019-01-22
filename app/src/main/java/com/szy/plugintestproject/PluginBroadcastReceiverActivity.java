@@ -1,9 +1,13 @@
 package com.szy.plugintestproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
+
+import com.szy.plugininterfacesmodule.Constants;
+import com.szy.plugininterfacesmodule.IBroadcastReceiverRegister;
 
 /**
  * Created by songzhiyang on 2019/1/22.
@@ -27,7 +31,22 @@ public class PluginBroadcastReceiverActivity extends BaseActivity{
         findViewById(R.id.btn_dynamic_register_receiver).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(PluginBroadcastReceiverActivity.this,"加载动态注册广播接收者方案",Toast.LENGTH_SHORT).show();
+                mergeDexInHostApp("plugina.apk");
+                try {
+                    //调用插件的动态注册广播接收者
+                    IBroadcastReceiverRegister pluginARegister = (IBroadcastReceiverRegister) getClassLoader().loadClass("com.szy.plugina.PluginABroadcastReceiverManager").newInstance();
+                    pluginARegister.registerBroadcastReceiver(getBaseContext());
+                    //测试代码
+                    Intent testBroadcastIntent = new Intent();
+                    testBroadcastIntent.setAction(Constants.BroadcastReceiverConstants.DYNAMIC_REGISTER_PLUGIN_BROADCAST_RECIEVER);
+                    getBaseContext().sendBroadcast(testBroadcastIntent);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
