@@ -25,4 +25,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:text="测试plugina的broadcast1"
+        android:id="@+id/btn_test_plugina_broadcast1"
+        app:layout_constraintTop_toBottomOf="@+id/btn_host_manifest_register_receiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:text="测试plugina的broadcast2"
+        android:id="@+id/btn_test_plugina_broadcast2"
+        app:layout_constraintTop_toBottomOf="@+id/btn_test_plugina_broadcast1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </android.support.constraint.ConstraintLayout>

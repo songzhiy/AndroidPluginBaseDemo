@@ -1,2 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.szy.plugina"/>
+          package="com.szy.plugina">
+    
+    <application>
+        <receiver android:name=".PluginABroadcastReceiver1" android:exported="true" android:enabled="true">
+            <intent-filter>
+                <action android:name="manifest_register_plugin_broadcast_receiver1"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".PluginABroadcastReceiver2">
+            <intent-filter>
+                <action android:name="manifest_register_plugin_broadcast_receiver2"/>
+            </intent-filter>
+        </receiver>
+    </application>
+    
+</manifest>

@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.szy.plugininterfacesmodule.Constants;
 import com.szy.plugininterfacesmodule.IBroadcastReceiverRegister;
+import com.szy.plugintestproject.hook.receiver.BroadcastDynamicRegisterHooker;
 
 /**
  * Created by songzhiyang on 2019/1/22.
@@ -53,7 +54,9 @@ public class PluginBroadcastReceiverActivity extends BaseActivity{
         findViewById(R.id.btn_manifest_register_receiver).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(PluginBroadcastReceiverActivity.this,"加载静态注册广播接收者方案",Toast.LENGTH_SHORT).show();
+                mergeDexInHostApp("plugina.apk");
+                //手动解析插件apk的manifest文件 然后进行动态注册
+                BroadcastDynamicRegisterHooker.dynamicRegiterPluginBroadcastReceiver(getBaseContext(),"plugina.apk");
             }
         });
 
@@ -61,6 +64,22 @@ public class PluginBroadcastReceiverActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
                 Toast.makeText(PluginBroadcastReceiverActivity.this,"宿主注册manifest加载插件静态注册广播接收者方案",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.btn_test_plugina_broadcast1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Constants.BroadcastReceiverConstants.MANIFEST_REGISTER_PLUGIN_BROADCAST_RECEIVER1);
+                sendBroadcast(intent);
+            }
+        });
+
+        findViewById(R.id.btn_test_plugina_broadcast2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Constants.BroadcastReceiverConstants.MANIFEST_REGISTER_PLUGIN_BROADCAST_RECEIVER2);
+                sendBroadcast(intent);
             }
         });
     }
