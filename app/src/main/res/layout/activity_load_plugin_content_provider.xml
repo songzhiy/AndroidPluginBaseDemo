@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Button
+        android:id="@+id/btn_load_plugin_content_provider"
+        android:text="加载插件中的contentprovider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_test_content_provider"
+        app:layout_constraintTop_toBottomOf="@+id/btn_load_plugin_content_provider"
+        android:text="测试使用插件中的contentprovider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_test_transform_content_provider"
+        android:text="测试使用host中转内容接收者"
+        app:layout_constraintTop_toBottomOf="@+id/btn_test_content_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</android.support.constraint.ConstraintLayout>

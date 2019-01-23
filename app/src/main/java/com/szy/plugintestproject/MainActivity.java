@@ -81,7 +81,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btn_load_plugin_content_provider).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"跳转内容提供者",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this,PluginContentProviderActivity.class));
             }
         });
     }
