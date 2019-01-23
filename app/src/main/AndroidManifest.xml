@@ -44,6 +44,12 @@
 
         <activity android:name=".PluginContentProviderActivity"/>
 
+        <provider
+            android:authorities="content_provider_host_app_schema"
+            android:exported="true"
+            android:enabled="true"
+            android:name=".StubContentProvider"/>
+
     </application>
 
 </manifest>

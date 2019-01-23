@@ -1,4 +1,4 @@
-package com.szy.plugina;
+package com.szy.plugintestproject;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -8,14 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import static com.szy.plugininterfacesmodule.Constants.ContentProviderConstants.CONTENT_PROVIDER_PLUGIN_A_SCHEMA;
+import com.szy.plugininterfacesmodule.Constants;
 
 /**
  * Created by songzhiyang on 2019/1/23.
  *
  * @author songzhiyang
  */
-public class PluginAContentProvider extends ContentProvider{
+public class StubContentProvider extends ContentProvider{
     @Override
     public boolean onCreate() {
         return false;
@@ -41,11 +41,12 @@ public class PluginAContentProvider extends ContentProvider{
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        if (CONTENT_PROVIDER_PLUGIN_A_SCHEMA.equals(uri.getAuthority())) {
-            Log.e("------","uri -- " + uri.toString());
-            return 99999;
-        }
-        return 0;
+        Log.e("------","走了中转的StubContentProvider");
+        String uriStr = uri.toString();
+        String authority = uri.getAuthority();
+        String newUriStr = uriStr.replaceAll(authority, Constants.ContentProviderConstants.CONTENT_PROVIDER_PLUGIN_A_SCHEMA);
+        Uri newUri = Uri.parse(newUriStr);
+        return getContext().getContentResolver().delete(newUri,selection,selectionArgs);
     }
 
     @Override

@@ -15,5 +15,6 @@ public class Constants {
 
     public final class ContentProviderConstants {
         public static final String CONTENT_PROVIDER_PLUGIN_A_SCHEMA = "content_provider_plugin_a_schema";
+        public static final String CONTENT_PROVIDER_HOST_APP_SCHEMA = "content_provider_host_app_schema";
     }
 }

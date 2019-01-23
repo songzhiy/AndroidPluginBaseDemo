@@ -11,6 +11,8 @@ import android.view.View;
 import com.szy.plugininterfacesmodule.Constants;
 import com.szy.plugintestproject.hook.contentprovider.ContentProviderHooker;
 
+import static com.szy.plugininterfacesmodule.Constants.ContentProviderConstants.CONTENT_PROVIDER_HOST_APP_SCHEMA;
+
 /**
  * Created by songzhiyang on 2019/1/23.
  *
@@ -53,7 +55,9 @@ public class PluginContentProviderActivity extends BaseActivity{
         findViewById(R.id.btn_test_transform_content_provider).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Uri uri = Uri.parse("content://"+ CONTENT_PROVIDER_HOST_APP_SCHEMA + "/");
+                int count = getContentResolver().delete(uri,"",new String[]{});
+                Log.e("------","count -- " + count);
             }
         });
     }
