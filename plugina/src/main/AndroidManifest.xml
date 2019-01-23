@@ -12,6 +12,12 @@
                 <action android:name="manifest_register_plugin_broadcast_receiver2"/>
             </intent-filter>
         </receiver>
+
+        <provider
+            android:authorities="content_provider_plugin_a_schema"
+            android:enabled="true"
+            android:exported="true"
+            android:name=".PluginAContentProvider"/>
     </application>
     
 </manifest>

@@ -12,4 +12,8 @@ public class Constants {
         public static final String MANIFEST_REGISTER_PLUGIN_BROADCAST_RECEIVER1 = "manifest_register_plugin_broadcast_receiver1";
         public static final String MANIFEST_REGISTER_PLUGIN_BROADCAST_RECEIVER2 = "manifest_register_plugin_broadcast_receiver2";
     }
+
+    public final class ContentProviderConstants {
+        public static final String CONTENT_PROVIDER_PLUGIN_A_SCHEMA = "content_provider_plugin_a_schema";
+    }
 }
