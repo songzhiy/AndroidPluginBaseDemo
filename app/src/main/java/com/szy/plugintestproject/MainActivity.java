@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.szy.plugininterfacesmodule.Constants;
 import com.szy.plugininterfacesmodule.IPluginConfig;
+import com.szy.plugintestproject.that.ActivityProxy;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -82,6 +84,30 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,PluginContentProviderActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_that_load_plugin_activity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ActivityProxy.class);
+                intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_NAME,"plugina.apk");
+                intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_ACTIVITY_CLASS,"com.szy.plugina.that.ThatPluginAActivity");
+                MainActivity.this.startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.btn_that_load_plugin_service).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        findViewById(R.id.btn_that_load_plugin_receiver).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

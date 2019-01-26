@@ -55,4 +55,28 @@
         android:text="启动插件的内容提供者"
         app:layout_constraintTop_toBottomOf="@+id/btn_load_plugin_broadcast_receiver"/>
 
+    <Button
+        android:id="@+id/btn_that_load_plugin_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="that方式加载Activity"
+        app:layout_constraintTop_toBottomOf="@+id/btn_load_plugin_content_provider"/>
+
+    <Button
+        android:id="@+id/btn_that_load_plugin_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="that方式加载Service"
+        app:layout_constraintTop_toBottomOf="@+id/btn_that_load_plugin_activity"/>
+
+    <Button
+        android:id="@+id/btn_that_load_plugin_receiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="that方式加载receiver"
+        app:layout_constraintTop_toBottomOf="@+id/btn_that_load_plugin_service"/>
+
+
+
+
 </android.support.constraint.ConstraintLayout>

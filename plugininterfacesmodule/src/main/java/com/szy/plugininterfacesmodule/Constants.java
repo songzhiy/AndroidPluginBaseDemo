@@ -17,4 +17,9 @@ public class Constants {
         public static final String CONTENT_PROVIDER_PLUGIN_A_SCHEMA = "content_provider_plugin_a_schema";
         public static final String CONTENT_PROVIDER_HOST_APP_SCHEMA = "content_provider_host_app_schema";
     }
+
+    public final class ThatConstants {
+        public static final String THAT_INTENT_PLUGIN_NAME = "that_intent_plugin_name";
+        public static final String THAT_INTENT_PLUGIN_ACTIVITY_CLASS = "that_intent_plugin_activity_class";
+    }
 }

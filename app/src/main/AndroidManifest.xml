@@ -50,6 +50,8 @@
             android:enabled="true"
             android:name=".StubContentProvider"/>
 
+        <activity android:name=".that.ActivityProxy"/>
+
     </application>
 
 </manifest>
