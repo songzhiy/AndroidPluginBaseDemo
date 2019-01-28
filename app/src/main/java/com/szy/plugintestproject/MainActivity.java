@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.szy.plugininterfacesmodule.Constants;
 import com.szy.plugininterfacesmodule.IPluginConfig;
 import com.szy.plugintestproject.that.ActivityProxy;
+import com.szy.plugintestproject.that.ThatServiceActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -101,7 +102,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btn_that_load_plugin_service).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainActivity.this.startActivity(new Intent(MainActivity.this, ThatServiceActivity.class));
             }
         });
 
