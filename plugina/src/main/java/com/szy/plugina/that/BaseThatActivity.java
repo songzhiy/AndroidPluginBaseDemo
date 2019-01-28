@@ -7,15 +7,17 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.szy.plugininterfacesmodule.that.IActivityLifeCycle;
+import com.szy.plugininterfacesmodule.that.IActivityStackRecorder;
 
 /**
  * Created by songzhiyang on 2019/1/26.
  *
  * @author songzhiyang
  */
-public class BaseThatActivity implements IActivityLifeCycle{
+public class BaseThatActivity implements IActivityLifeCycle,IActivityStackRecorder{
 
     protected Activity that;
+    private String launchMode = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,5 +62,27 @@ public class BaseThatActivity implements IActivityLifeCycle{
     @Override
     public void setProxy(Activity activity) {
         that = activity;
+    }
+
+    @Override
+    public void setLaunchMode(String launchMode) {
+        this.launchMode = launchMode;
+    }
+
+    @Override
+    public String getClassName() {
+        return BaseThatActivity.this.getClass().getName();
+    }
+
+    @Override
+    public void finish() {
+        if (that != null) {
+            that.finish();
+        }
+    }
+
+    @Override
+    public String getLaunchMode() {
+        return launchMode;
     }
 }

@@ -28,4 +28,6 @@ public interface IActivityLifeCycle {
     public void onActivityResult(int requestCode, int resultCode, Intent data);
 
     public void setProxy(Activity activity);
+
+    public void setLaunchMode(String launchMode);
 }

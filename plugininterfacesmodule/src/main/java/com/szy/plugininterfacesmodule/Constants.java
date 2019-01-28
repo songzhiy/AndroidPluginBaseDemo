@@ -21,5 +21,11 @@ public class Constants {
     public final class ThatConstants {
         public static final String THAT_INTENT_PLUGIN_NAME = "that_intent_plugin_name";
         public static final String THAT_INTENT_PLUGIN_ACTIVITY_CLASS = "that_intent_plugin_activity_class";
+
+        public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE = "that_intent_activity_launch_mode";
+        public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE_STANDARD = "that_intent_activity_launch_mode_standard";
+        public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_TOP = "that_intent_activity_launch_mode_single_top";
+        public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_INSTANCE = "that_intent_activity_launch_mode_single_instance";
+        public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_TASK = "that_intent_activity_launch_mode_single_task";
     }
 }

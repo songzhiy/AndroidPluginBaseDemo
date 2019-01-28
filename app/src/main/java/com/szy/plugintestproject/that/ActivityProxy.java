@@ -1,18 +1,23 @@
 package com.szy.plugintestproject.that;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.text.TextUtils;
 
 import com.szy.plugininterfacesmodule.Constants;
 import com.szy.plugininterfacesmodule.that.IActivityLifeCycle;
+import com.szy.plugininterfacesmodule.that.IActivityStackRecorder;
 import com.szy.plugintestproject.BaseActivity;
 
 /**
  * Created by songzhiyang on 2019/1/26.
+ *
+ * 通过使用that框架的ActivityProxy 使得插件的activity彻底沦落为一个普通的类
+ * 通过真正的activity -- ActivityProxy的生命周期来控制插件activity的回调方法
+ * 但是存在一个问题 即activity的启动模式失效
+ * 为了解决这个问题 可以手动做一个activity栈 当activity启动起来之后 可以把其放置到某个栈中
+ * 但是这个方法无法解决插件重新调用host app中activity的情况
  *
  * @author songzhiyang
  */
@@ -26,6 +31,10 @@ public class ActivityProxy extends BaseActivity{
 
         String pluginName = getIntent().getStringExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_NAME);
         String activityName = getIntent().getStringExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_ACTIVITY_CLASS);
+        String launchMode = getIntent().getStringExtra(Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE);
+        if (TextUtils.isEmpty(launchMode)) {
+            launchMode = Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE_STANDARD;
+        }
 
         mergeDexInHostApp(pluginName);
         mergeResource(pluginName);
@@ -33,7 +42,10 @@ public class ActivityProxy extends BaseActivity{
         try {
             mIActivityLifeCycle = (IActivityLifeCycle) getClassLoader().loadClass(activityName).newInstance();
             mIActivityLifeCycle.setProxy(this);
+            mIActivityLifeCycle.setLaunchMode(launchMode);
             mIActivityLifeCycle.onCreate(savedInstanceState);
+
+            ActivityStackRecorder.dealActivityStack((IActivityStackRecorder) mIActivityLifeCycle);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
