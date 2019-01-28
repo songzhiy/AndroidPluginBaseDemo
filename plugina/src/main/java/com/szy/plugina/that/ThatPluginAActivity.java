@@ -25,12 +25,22 @@ public class ThatPluginAActivity extends BaseThatActivity{
         that.findViewById(R.id.btn_click).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = null;
+
+                //tes code - activity launch mode - single top
+//                Intent intent = null;
+//                try {
+//                    intent = new Intent(that, that.getClassLoader().loadClass("com.szy.plugintestproject.that.ActivityProxy"));
+//                    intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_NAME,"plugina.apk");
+//                    intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_ACTIVITY_CLASS,"com.szy.plugina.that.ThatPluginAActivity");
+//                    intent.putExtra(Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE,Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_TOP);
+//                    that.startActivity(intent);
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+
+                //test code - activity launch mode - single instance
                 try {
-                    intent = new Intent(that, that.getClassLoader().loadClass("com.szy.plugintestproject.that.ActivityProxy"));
-                    intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_NAME,"plugina.apk");
-                    intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_ACTIVITY_CLASS,"com.szy.plugina.that.ThatPluginAActivity");
-                    intent.putExtra(Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE,Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_TOP);
+                    Intent intent = new Intent(that,that.getClassLoader().loadClass("com.szy.plugintestproject.MainActivity"));
                     that.startActivity(intent);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();

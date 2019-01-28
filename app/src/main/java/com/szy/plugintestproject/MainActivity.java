@@ -93,6 +93,7 @@ public class MainActivity extends BaseActivity {
                 Intent intent = new Intent(MainActivity.this, ActivityProxy.class);
                 intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_NAME,"plugina.apk");
                 intent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_ACTIVITY_CLASS,"com.szy.plugina.that.ThatPluginAActivity");
+                intent.putExtra(Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE,Constants.ThatConstants.THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_INSTANCE);
                 MainActivity.this.startActivity(intent);
             }
         });
