@@ -54,6 +54,8 @@
 
         <activity android:name=".that.ThatServiceActivity"/>
 
+        <service android:name=".that.service.ServiceProxy"/>
+
     </application>
 
 </manifest>

@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.util.Log;
 
+import com.szy.plugininterfacesmodule.that.IServiceIifeCycle;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +22,9 @@ import java.util.Map;
  */
 public class ThatPluginServiceManager {
 
-    private static final Map<String,ServiceInfo> mPluginServiceInfoCache = new HashMap<>();
+    public static final Map<String,ServiceInfo> mPluginServiceInfoCache = new HashMap<>();
+
+    public static final Map<String,IServiceIifeCycle> mPluginServiceObjCache = new HashMap<>();
 
     public static void loadPluginService(Context context, String pluginName) {
         try {

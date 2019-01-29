@@ -1,7 +1,13 @@
 package com.szy.plugintestproject.that.service;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+
+import com.szy.plugininterfacesmodule.Constants;
+import com.szy.plugininterfacesmodule.that.IActivityLifeCycle;
+import com.szy.plugininterfacesmodule.that.IServiceIifeCycle;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -26,8 +32,8 @@ public class ThatAMNHooker {
             Object iActivityManager = singletonInstanceField.get(singletonObj);
 
             //构造IActivityManager接口的动态代理类
-            Object proxy = Proxy.newProxyInstance(context.getClassLoader(),iActivityManager.getClass().getInterfaces(),new IActivityManagerInvocationHandler(iActivityManager));
-            singletonInstanceField.set(singletonObj,proxy);
+            Object proxy = Proxy.newProxyInstance(context.getClassLoader(), iActivityManager.getClass().getInterfaces(), new IActivityManagerInvocationHandler(iActivityManager));
+            singletonInstanceField.set(singletonObj, proxy);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
@@ -47,8 +53,56 @@ public class ThatAMNHooker {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            Log.e("------","走了没");
-            return method.invoke(iActivityManager,args);
+            if ("startService".equals(method.getName())) {
+                //替换intent
+                int intentIndex = -1;
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i] instanceof Intent) {
+                        intentIndex = i;
+                    }
+                }
+                if (intentIndex == -1) {
+                    return method.invoke(iActivityManager,args);
+                }
+                Intent realIntent = (Intent) args[intentIndex];
+                String pluginClassStr = realIntent.getComponent().getClassName();
+                if (ThatPluginServiceManager.mPluginServiceInfoCache.get(pluginClassStr) != null) {
+                    Intent proxyIntent = new Intent();
+                    ComponentName componentName = new ComponentName(realIntent.getComponent().getPackageName(), "com.szy.plugintestproject.that.service.ServiceProxy");
+                    proxyIntent.setComponent(componentName);
+                    proxyIntent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT,realIntent);
+                    args[intentIndex] = proxyIntent;
+                    return method.invoke(iActivityManager,args);
+                }
+            }
+            if ("stopService".equals(method.getName())) {
+                //替换intent
+                int intentIndex = -1;
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i] instanceof Intent) {
+                        intentIndex = i;
+                    }
+                }
+                if (intentIndex == -1) {
+                    return method.invoke(iActivityManager,args);
+                }
+                Intent realIntent = (Intent) args[intentIndex];
+                String pluginClassStr = realIntent.getComponent().getClassName();
+                if (ThatPluginServiceManager.mPluginServiceObjCache.get(pluginClassStr) != null) {
+                    IServiceIifeCycle iServiceIifeCycle = (IServiceIifeCycle) ThatPluginServiceManager.mPluginServiceObjCache.remove(pluginClassStr);
+                    iServiceIifeCycle.onDestroy();
+                    if (ThatPluginServiceManager.mPluginServiceObjCache.size() == 0) {
+                        Intent proxyIntent = new Intent();
+                        ComponentName componentName = new ComponentName(realIntent.getComponent().getPackageName(), "com.szy.plugintestproject.that.service.ServiceProxy");
+                        proxyIntent.setComponent(componentName);
+                        proxyIntent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT,realIntent);
+                        args[intentIndex] = proxyIntent;
+                        return method.invoke(iActivityManager,args);
+                    }
+                    return 1;
+                }
+            }
+            return method.invoke(iActivityManager, args);
         }
     }
 }

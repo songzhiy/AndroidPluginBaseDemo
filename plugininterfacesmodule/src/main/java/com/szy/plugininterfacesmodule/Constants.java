@@ -27,5 +27,8 @@ public class Constants {
         public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_TOP = "that_intent_activity_launch_mode_single_top";
         public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_INSTANCE = "that_intent_activity_launch_mode_single_instance";
         public static final String THAT_INTENT_ACTIVITY_LAUNCH_MODE_SINGLE_TASK = "that_intent_activity_launch_mode_single_task";
+
+        public static final String THAT_INTENT_PLUGIN_SERVICE_CLASS = "that_intent_plugin_service_class";
+        public static final String THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT = "that_intent_plugin_service_real_intent";
     }
 }

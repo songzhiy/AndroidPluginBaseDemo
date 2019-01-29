@@ -1,11 +1,13 @@
 package com.szy.plugintestproject.that;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.szy.plugininterfacesmodule.Constants;
 import com.szy.plugintestproject.BaseActivity;
 import com.szy.plugintestproject.R;
 import com.szy.plugintestproject.that.service.ThatAMNHooker;
@@ -48,6 +50,39 @@ public class ThatServiceActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                ComponentName componentName = new ComponentName(ThatServiceActivity.this,"com.szy.plugina.that.ThatPluginAService");
+                intent.setComponent(componentName);
+                startService(intent);
+            }
+        });
+
+        findViewById(R.id.btn_stop_dynamic_plugin_service).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName(ThatServiceActivity.this,"com.szy.plugina.that.ThatPluginAService");
+                intent.setComponent(componentName);
+                stopService(intent);
+            }
+        });
+
+        findViewById(R.id.btn_start_dynamic_plugin_service2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName(ThatServiceActivity.this,"com.szy.plugina.that.ThatPluginAService2");
+                intent.setComponent(componentName);
+                startService(intent);
+            }
+        });
+
+        findViewById(R.id.btn_stop_dynamic_plugin_service2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName(ThatServiceActivity.this,"com.szy.plugina.that.ThatPluginAService2");
+                intent.setComponent(componentName);
+                stopService(intent);
             }
         });
     }
