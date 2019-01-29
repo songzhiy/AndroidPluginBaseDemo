@@ -18,6 +18,11 @@
             android:enabled="true"
             android:exported="true"
             android:name=".PluginAContentProvider"/>
+
+        <service android:name=".that.ThatPluginAService"/>
+
+        <service android:name=".that.ThatPluginAService2"/>
+
     </application>
     
 </manifest>

@@ -28,6 +28,11 @@ public class PluginAServiceA extends Service{
     int i = 0;
     boolean isFirst = true;
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -42,6 +47,11 @@ public class PluginAServiceA extends Service{
             mTimer.schedule(mTimerTask,0,1000);
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
     }
 
     @Override
