@@ -15,6 +15,7 @@ import com.szy.plugininterfacesmodule.Constants;
 import com.szy.plugininterfacesmodule.that.IThatServiceBinder;
 import com.szy.plugintestproject.BaseActivity;
 import com.szy.plugintestproject.R;
+import com.szy.plugintestproject.that.service.ServiceProxy;
 import com.szy.plugintestproject.that.service.ThatAMNHooker;
 import com.szy.plugintestproject.that.service.ThatPluginServiceManager;
 
@@ -30,11 +31,27 @@ import com.szy.plugintestproject.that.service.ThatPluginServiceManager;
  *    3、在onStartCommand中去使用that回调插件service onCreate/onStartCommand
  *    4、Hook Stop方法 判断ServiceManager中是否还存在运行的插件service 有则停止掉目标service 没有停止掉ProxyService
  *
- *    bind/unbind 类似
+ *    bind/unbind现在只实现了相同进程的service的处理 非相同进程的没有实现 后期再研究吧
+ *    书上这里做法是错误的 因为onBind方法只能执行一次 无法执行多次回调
+ *    所以采用了一个Service管理多个aidl的方式 进行假的处理
  *
  * @author songzhiyang
  */
 public class ThatServiceActivity extends BaseActivity{
+
+    private ServiceProxy.ITransformBinder mITransformBinder = null;
+
+    private ServiceConnection baseServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mITransformBinder = (ServiceProxy.ITransformBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -43,6 +60,11 @@ public class ThatServiceActivity extends BaseActivity{
         mergeDexInHostApp("plugina.apk");
         ThatPluginServiceManager.loadPluginService(newBase,"plugina.apk");
         ThatAMNHooker.thatHookAMN(newBase);
+
+        Intent intent = new Intent();
+        ComponentName componentName = new ComponentName(ThatServiceActivity.this,ServiceProxy.class);
+        intent.setComponent(componentName);
+        super.bindService(intent,baseServiceConn, Service.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -152,4 +174,18 @@ public class ThatServiceActivity extends BaseActivity{
         }
     };
 
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        if (mITransformBinder != null) {
+            return mITransformBinder.bindService(service,conn,flags) != null;
+        }
+        return false;
+    }
+
+    @Override
+    public void unbindService(ServiceConnection conn) {
+        if (mITransformBinder != null) {
+            mITransformBinder.unbindService(conn);
+        }
+    }
 }

@@ -1,7 +1,10 @@
 package com.szy.plugintestproject.that.service;
 
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,24 +21,7 @@ public class ServiceProxy extends Service{
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e("------","ServiceProxy --- onBind!!!");
-        Intent realIntent = intent.getParcelableExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT);
-        String realIntentClassStr = realIntent.getComponent().getClassName();
-        IServiceIifeCycle targetService = ThatPluginServiceManager.mPluginServiceObjCache.get(realIntentClassStr);
-        if (targetService == null) {
-            try {
-                targetService = (IServiceIifeCycle) getClassLoader().loadClass(realIntentClassStr).newInstance();
-                ThatPluginServiceManager.mPluginServiceObjCache.put(realIntentClassStr,targetService);
-                targetService.onCreate();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            }
-        }
-        return targetService.onBind(realIntent);
+        return new TransformBinder();
     }
 
 
@@ -54,6 +40,7 @@ public class ServiceProxy extends Service{
             try {
                 targetService = (IServiceIifeCycle) getClassLoader().loadClass(realIntentClassStr).newInstance();
                 ThatPluginServiceManager.mPluginServiceObjCache.put(realIntentClassStr,targetService);
+                targetService.setProxy(this);
                 targetService.onCreate();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -76,5 +63,44 @@ public class ServiceProxy extends Service{
     public void onDestroy() {
         super.onDestroy();
         Log.e("------","ServiceProxy --- onDestroy!!!");
+    }
+
+    public class TransformBinder extends Binder implements ITransformBinder {
+
+        @Override
+        public IBinder bindService(Intent service, ServiceConnection conn, int flags) {
+            Log.e("------","ServiceProxy --- onBind!!!");
+            Intent realIntent = service;
+            String realIntentClassStr = realIntent.getComponent().getClassName();
+            IServiceIifeCycle targetService = ThatPluginServiceManager.mPluginServiceObjCache.get(realIntentClassStr);
+            if (targetService == null) {
+                try {
+                    targetService = (IServiceIifeCycle) getClassLoader().loadClass(realIntentClassStr).newInstance();
+                    ThatPluginServiceManager.mPluginServiceObjCache.put(realIntentClassStr,targetService);
+                    targetService.setProxy(ServiceProxy.this);
+                    targetService.onCreate();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                }
+            }
+            IBinder targetBinder = targetService.onBind(realIntent);
+            conn.onServiceConnected(realIntent.getComponent(),targetBinder);
+            return targetBinder;
+        }
+
+        @Override
+        public void unbindService(ServiceConnection conn) {
+            Log.e("------","ServiceProxy --- unBind!!!");
+            conn.onServiceDisconnected(new ComponentName("",""));
+        }
+    }
+
+    public interface ITransformBinder {
+        IBinder bindService(Intent service, ServiceConnection conn, int flags);
+        void unbindService(ServiceConnection conn);
     }
 }
