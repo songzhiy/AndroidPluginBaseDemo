@@ -3,6 +3,7 @@ package com.szy.plugintestproject.that.service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.util.Log;
 
 import com.szy.plugininterfacesmodule.Constants;
@@ -62,7 +63,7 @@ public class ThatAMNHooker {
                     }
                 }
                 if (intentIndex == -1) {
-                    return method.invoke(iActivityManager,args);
+                    return method.invoke(iActivityManager, args);
                 }
                 Intent realIntent = (Intent) args[intentIndex];
                 String pluginClassStr = realIntent.getComponent().getClassName();
@@ -70,9 +71,9 @@ public class ThatAMNHooker {
                     Intent proxyIntent = new Intent();
                     ComponentName componentName = new ComponentName(realIntent.getComponent().getPackageName(), "com.szy.plugintestproject.that.service.ServiceProxy");
                     proxyIntent.setComponent(componentName);
-                    proxyIntent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT,realIntent);
+                    proxyIntent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT, realIntent);
                     args[intentIndex] = proxyIntent;
-                    return method.invoke(iActivityManager,args);
+                    return method.invoke(iActivityManager, args);
                 }
             }
             if ("stopService".equals(method.getName())) {
@@ -84,7 +85,7 @@ public class ThatAMNHooker {
                     }
                 }
                 if (intentIndex == -1) {
-                    return method.invoke(iActivityManager,args);
+                    return method.invoke(iActivityManager, args);
                 }
                 Intent realIntent = (Intent) args[intentIndex];
                 String pluginClassStr = realIntent.getComponent().getClassName();
@@ -95,14 +96,58 @@ public class ThatAMNHooker {
                         Intent proxyIntent = new Intent();
                         ComponentName componentName = new ComponentName(realIntent.getComponent().getPackageName(), "com.szy.plugintestproject.that.service.ServiceProxy");
                         proxyIntent.setComponent(componentName);
-                        proxyIntent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT,realIntent);
+                        proxyIntent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT, realIntent);
                         args[intentIndex] = proxyIntent;
-                        return method.invoke(iActivityManager,args);
+                        return method.invoke(iActivityManager, args);
                     }
                     return 1;
                 }
             }
+            if ("bindService".equals(method.getName())) {
+                //替换intent
+                int intentIndex = -1;
+                int serviceConnectionIndex = 4;
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i] instanceof Intent) {
+                        intentIndex = i;
+                    }
+                }
+                if (intentIndex != -1) {
+                    //缓存ServiceConnection 与 RealIntent之间的关系
+                    Object serviceConnection = (Object) args[serviceConnectionIndex];
+                    ThatPluginServiceManager.mPluginServiceConn2RealIntentCache.put(serviceConnection, (Intent) args[intentIndex]);
+                    //替换intent
+                    Intent realIntent = (Intent) args[intentIndex];
+                    String pluginClassStr = realIntent.getComponent().getClassName();
+                    if (ThatPluginServiceManager.mPluginServiceInfoCache.get(pluginClassStr) != null) {
+                        Intent proxyIntent = new Intent();
+                        ComponentName componentName = new ComponentName(realIntent.getComponent().getPackageName(), "com.szy.plugintestproject.that.service.ServiceProxy");
+                        proxyIntent.setComponent(componentName);
+                        proxyIntent.putExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT, realIntent);
+                        args[intentIndex] = proxyIntent;
+                        return method.invoke(iActivityManager, args);
+                    }
+                }
+            }
+            if ("unbindService".equals(method.getName())) {
+                int serviceConnectionIndex = 0;
+                Object serviceConnection = (Object) args[serviceConnectionIndex];
+                Intent realIntent = ThatPluginServiceManager.mPluginServiceConn2RealIntentCache.get(serviceConnection);
+                String pluginServiceName = realIntent.getComponent().getClassName();
+                IServiceIifeCycle iServiceIifeCycle = ThatPluginServiceManager.mPluginServiceObjCache.remove(pluginServiceName);
+                if (iServiceIifeCycle != null) {
+                    iServiceIifeCycle.onUnbind(realIntent);
+                }
+                if (ThatPluginServiceManager.mPluginServiceObjCache.size() == 0) {
+                    return method.invoke(iActivityManager,args);
+                } else {
+                    return 1;
+                }
+            }
+
             return method.invoke(iActivityManager, args);
         }
     }
+
+
 }

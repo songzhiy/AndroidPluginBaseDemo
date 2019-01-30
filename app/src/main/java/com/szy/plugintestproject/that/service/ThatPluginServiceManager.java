@@ -1,6 +1,8 @@
 package com.szy.plugintestproject.that.service;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.util.Log;
@@ -25,6 +27,8 @@ public class ThatPluginServiceManager {
     public static final Map<String,ServiceInfo> mPluginServiceInfoCache = new HashMap<>();
 
     public static final Map<String,IServiceIifeCycle> mPluginServiceObjCache = new HashMap<>();
+
+    public static final Map<Object,Intent> mPluginServiceConn2RealIntentCache = new HashMap<>();
 
     public static void loadPluginService(Context context, String pluginName) {
         try {

@@ -19,8 +19,25 @@ public class ServiceProxy extends Service{
     @Override
     public IBinder onBind(Intent intent) {
         Log.e("------","ServiceProxy --- onBind!!!");
-        return null;
+        Intent realIntent = intent.getParcelableExtra(Constants.ThatConstants.THAT_INTENT_PLUGIN_SERVICE_REAL_INTENT);
+        String realIntentClassStr = realIntent.getComponent().getClassName();
+        IServiceIifeCycle targetService = ThatPluginServiceManager.mPluginServiceObjCache.get(realIntentClassStr);
+        if (targetService == null) {
+            try {
+                targetService = (IServiceIifeCycle) getClassLoader().loadClass(realIntentClassStr).newInstance();
+                ThatPluginServiceManager.mPluginServiceObjCache.put(realIntentClassStr,targetService);
+                targetService.onCreate();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+        return targetService.onBind(realIntent);
     }
+
 
     @Override
     public void onCreate() {
@@ -46,7 +63,7 @@ public class ServiceProxy extends Service{
                 e.printStackTrace();
             }
         }
-        return targetService.onStartCommand(intent,flags,startId);
+        return targetService.onStartCommand(realIntent,flags,startId);
     }
 
     @Override

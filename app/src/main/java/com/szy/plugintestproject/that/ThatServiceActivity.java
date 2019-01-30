@@ -1,13 +1,18 @@
 package com.szy.plugintestproject.that;
 
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 
 import com.szy.plugininterfacesmodule.Constants;
+import com.szy.plugininterfacesmodule.that.IThatServiceBinder;
 import com.szy.plugintestproject.BaseActivity;
 import com.szy.plugintestproject.R;
 import com.szy.plugintestproject.that.service.ThatAMNHooker;
@@ -85,5 +90,66 @@ public class ThatServiceActivity extends BaseActivity{
                 stopService(intent);
             }
         });
+
+        findViewById(R.id.btn_bind_dynamic_plugin_service).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName(ThatServiceActivity.this,"com.szy.plugina.that.ThatPluginAService");
+                intent.setComponent(componentName);
+                bindService(intent,service1, Service.BIND_AUTO_CREATE);
+            }
+        });
+
+        findViewById(R.id.btn_unbind_dynamic_plugin_service).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unbindService(service1);
+            }
+        });
+
+        findViewById(R.id.btn_bind_dynamic_plugin_service2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName(ThatServiceActivity.this,"com.szy.plugina.that.ThatPluginAService2");
+                intent.setComponent(componentName);
+                bindService(intent,service2, Service.BIND_AUTO_CREATE);
+            }
+        });
+
+        findViewById(R.id.btn_unbind_dynamic_plugin_service2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unbindService(service2);
+            }
+        });
     }
+
+    private ServiceConnection service1 = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            IThatServiceBinder iThatServiceBinder = (IThatServiceBinder) service;
+            Log.e("------","onServiceConnected --- " + iThatServiceBinder.getThatServiceName());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e("------","service1 --- onServiceDisconnected");
+        }
+    };
+
+    private ServiceConnection service2 = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            IThatServiceBinder iThatServiceBinder = (IThatServiceBinder) service;
+            Log.e("------","onServiceConnected --- " + iThatServiceBinder.getThatServiceName());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e("------","service2 --- onServiceDisconnected");
+        }
+    };
+
 }
